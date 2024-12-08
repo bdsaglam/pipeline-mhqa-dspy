@@ -1,5 +1,5 @@
 [core]
     remote = s3-remote
 ['remote "s3-remote"']
-    url = s3://dvc/pipeline-mhqa-dspy
+    url = s3://bds-dvc/pipeline-mhqa-dspy
     profile = dvc
