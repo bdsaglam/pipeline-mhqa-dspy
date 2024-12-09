@@ -3,7 +3,7 @@ train:
     path: bdsaglam/musique-mini
     name: answerable
     split: train
-  optimizer: noop
+  optimizer: bfs-medium
 
 evaluation:
   dataset:
@@ -14,6 +14,6 @@ evaluation:
 qa:
   model: llama-3-70b-tgi
   temperature: 0.1
-  technique: standard
+  technique: cte
 
 run: 1
