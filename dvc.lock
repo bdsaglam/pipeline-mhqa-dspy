@@ -1,0 +1,60 @@
+schema: '2.0'
+stages:
+  train:
+    cmd: python main.py train --dataset-path bdsaglam/musique-mini --dataset-name
+      answerable --dataset-split train --model llama-3-70b-tgi --temperature 0.1 --technique
+      standard --optimizer-path data/raw/optimizer-configs/bfs-medium.json --out data/generated/training/trained-program.json
+    deps:
+    - path: data/raw/optimizer-configs/bfs-medium.json
+      hash: md5
+      md5: 904032974fec49affa98e67b5869ddb7
+      size: 237
+    - path: main.py
+      hash: md5
+      md5: c3dffe3d948da37e08bc3dd06ad2da56
+      size: 7003
+    params:
+      params.yaml:
+        qa.model: llama-3-70b-tgi
+        qa.technique: standard
+        qa.temperature: 0.1
+        train.dataset.name: answerable
+        train.dataset.path: bdsaglam/musique-mini
+        train.dataset.split: train
+        train.optimizer: bfs-medium
+    outs:
+    - path: data/generated/training/trained-program.json
+      hash: md5
+      md5: e985b5b05f36d6e73a5307b3824807e7
+      size: 9796
+  evaluate:
+    cmd: python main.py evaluate --dataset-path bdsaglam/musique --dataset-name answerable
+      --dataset-split validation --model llama-3-70b-tgi --temperature 0.1 --technique
+      standard --load-from data/generated/training/trained-program.json --out data/generated/evaluation/
+    deps:
+    - path: data/generated/training/trained-program.json
+      hash: md5
+      md5: e985b5b05f36d6e73a5307b3824807e7
+      size: 9796
+    - path: main.py
+      hash: md5
+      md5: c3dffe3d948da37e08bc3dd06ad2da56
+      size: 7003
+    params:
+      params.yaml:
+        evaluation.dataset.name: answerable
+        evaluation.dataset.path: bdsaglam/musique
+        evaluation.dataset.split: validation
+        qa.model: llama-3-70b-tgi
+        qa.technique: standard
+        qa.temperature: 0.1
+        run: 1
+    outs:
+    - path: data/generated/evaluation/results.jsonl
+      hash: md5
+      md5: 5be40ad00866a9bc22624ab0b4f082fc
+      size: 5313343
+    - path: data/generated/evaluation/scores.json
+      hash: md5
+      md5: a3b655600e36ba239619c941b9a35d2c
+      size: 464
