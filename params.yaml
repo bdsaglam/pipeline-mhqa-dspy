@@ -1,14 +1,14 @@
 train:
   dataset:
-    path: bdsaglam/musique-mini
-    name: answerable
+    path: bdsaglam/hotpotqa-distractor-mini
+    name: default
     split: train
-  optimizer: noop
+  optimizer: bfsrs-medium
 
 evaluation:
   dataset:
-    path: bdsaglam/musique
-    name: answerable
+    path: bdsaglam/hotpotqa-distractor
+    name: default
     split: validation
 
 qa:
