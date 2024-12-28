@@ -1,0 +1,61 @@
+schema: '2.0'
+stages:
+  train:
+    cmd: python main.py train --dataset-path bdsaglam/hotpotqa-distractor-mini --dataset-name
+      default --dataset-split validation --model llama-3-70b-tgi --temperature 0.1
+      --technique standard --optimizer-path data/raw/optimizer-configs/noop.json --out
+      data/generated/training/trained-program.json
+    deps:
+    - path: data/raw/optimizer-configs/noop.json
+      hash: md5
+      md5: 37a6259cc0c1dae299a7866489dff0bd
+      size: 4
+    - path: main.py
+      hash: md5
+      md5: c3dffe3d948da37e08bc3dd06ad2da56
+      size: 7003
+    params:
+      params.yaml:
+        qa.model: llama-3-70b-tgi
+        qa.technique: standard
+        qa.temperature: 0.1
+        train.dataset.name: default
+        train.dataset.path: bdsaglam/hotpotqa-distractor-mini
+        train.dataset.split: validation
+        train.optimizer: noop
+    outs:
+    - path: data/generated/training/trained-program.json
+      hash: md5
+      md5: e5542f827baec8c8a90f98af3f5cbf64
+      size: 528
+  evaluate:
+    cmd: python main.py evaluate --dataset-path bdsaglam/hotpotqa-distractor --dataset-name
+      default --dataset-split train --model llama-3-70b-tgi --temperature 0.1 --technique
+      standard --load-from data/generated/training/trained-program.json --out data/generated/evaluation/
+    deps:
+    - path: data/generated/training/trained-program.json
+      hash: md5
+      md5: e5542f827baec8c8a90f98af3f5cbf64
+      size: 528
+    - path: main.py
+      hash: md5
+      md5: c3dffe3d948da37e08bc3dd06ad2da56
+      size: 7003
+    params:
+      params.yaml:
+        evaluation.dataset.name: default
+        evaluation.dataset.path: bdsaglam/hotpotqa-distractor
+        evaluation.dataset.split: train
+        qa.model: llama-3-70b-tgi
+        qa.technique: standard
+        qa.temperature: 0.1
+        run: 1
+    outs:
+    - path: data/generated/evaluation/results.jsonl
+      hash: md5
+      md5: 406a7e5513a320b5378a3601874d58be
+      size: 150545962
+    - path: data/generated/evaluation/scores.json
+      hash: md5
+      md5: 9efc27f4e6a827bd64e04a78c1c1580d
+      size: 1218
