@@ -1,19 +1,19 @@
 train:
   dataset:
-    path: bdsaglam/musique-mini
-    name: answerable
-    split: train
-  optimizer: noop
+    path: bdsaglam/hotpotqa-distractor-mini
+    name: default
+    split: validation
+  optimizer: bfsrs-medium
 
 evaluation:
   dataset:
-    path: bdsaglam/musique
-    name: answerable
-    split: validation
+    path: bdsaglam/hotpotqa-distractor
+    name: default
+    split: train
 
 qa:
   model: llama-3-70b-tgi
   temperature: 0.1
-  technique: standard
+  technique: cte
 
 run: 1
