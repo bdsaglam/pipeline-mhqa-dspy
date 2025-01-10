@@ -1,0 +1,61 @@
+schema: '2.0'
+stages:
+  train:
+    cmd: python main.py train --dataset-path bdsaglam/musique-mini --dataset-name
+      answerable --dataset-split train --model llama-3-70b-tgi --temperature 0.1 --technique
+      standard --optimizer-path data/raw/optimizer-configs/bfsrs-medium.json --out
+      data/generated/training/trained-program.json
+    deps:
+    - path: data/raw/optimizer-configs/bfsrs-medium.json
+      hash: md5
+      md5: 21335759c8c5393412fe84db76afca93
+      size: 349
+    - path: main.py
+      hash: md5
+      md5: c3dffe3d948da37e08bc3dd06ad2da56
+      size: 7003
+    params:
+      params.yaml:
+        qa.model: llama-3-70b-tgi
+        qa.technique: standard
+        qa.temperature: 0.1
+        train.dataset.name: answerable
+        train.dataset.path: bdsaglam/musique-mini
+        train.dataset.split: train
+        train.optimizer: bfsrs-medium
+    outs:
+    - path: data/generated/training/trained-program.json
+      hash: md5
+      md5: 07f3d6ed4615f90d9d90edf77d727b16
+      size: 17518
+  evaluate:
+    cmd: python main.py evaluate --dataset-path bdsaglam/musique --dataset-name answerable
+      --dataset-split validation --model llama-3-70b-tgi --temperature 0.1 --technique
+      standard --load-from data/generated/training/trained-program.json --out data/generated/evaluation/
+    deps:
+    - path: data/generated/training/trained-program.json
+      hash: md5
+      md5: 07f3d6ed4615f90d9d90edf77d727b16
+      size: 17518
+    - path: main.py
+      hash: md5
+      md5: c3dffe3d948da37e08bc3dd06ad2da56
+      size: 7003
+    params:
+      params.yaml:
+        evaluation.dataset.name: answerable
+        evaluation.dataset.path: bdsaglam/musique
+        evaluation.dataset.split: validation
+        qa.model: llama-3-70b-tgi
+        qa.technique: standard
+        qa.temperature: 0.1
+        run: 4
+    outs:
+    - path: data/generated/evaluation/results.jsonl
+      hash: md5
+      md5: e6d3ab079adf19ac708582deb8de4d08
+      size: 5314636
+    - path: data/generated/evaluation/scores.json
+      hash: md5
+      md5: 67c5533c461ec0b697c75847beee26b4
+      size: 475
