@@ -9,6 +9,7 @@ stages:
       --temperature ${qa.temperature}
       --technique ${qa.technique}
       --optimizer-path data/raw/optimizer-configs/${train.optimizer}.json
+      --ensemble ${qa.ensemble}
       --out data/generated/training/trained-program.json
     deps:
       - main.py
@@ -20,6 +21,7 @@ stages:
       - train.dataset.name
       - train.dataset.split
       - train.optimizer
+      - train.ensemble
       - qa.model
       - qa.temperature
       - qa.technique

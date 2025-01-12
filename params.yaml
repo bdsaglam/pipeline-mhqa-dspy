@@ -4,6 +4,7 @@ train:
     name: answerable
     split: train
   optimizer: bfsrs-medium
+  ensemble: false
 
 evaluation:
   dataset:

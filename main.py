@@ -15,6 +15,7 @@ from bellem.utils import set_seed
 from datasets import load_dataset
 from dotenv import load_dotenv
 from dspy.evaluate import Evaluate
+from dspy.teleprompt.ensemble import Ensemble
 from rich.console import Console
 
 print = Console(stderr=True).print
@@ -131,6 +132,7 @@ def train_main(
     technique: str = typer.Option(..., help="Prompting technique to use"),
     load_from: str = typer.Option(default="UNSET", help="Path to a saved model to load"),
     optimizer_path: Path = typer.Option(..., help="Path to the optimizer config"),
+    ensemble: bool = typer.Option(False, help="Whether to use an ensemble of models"),
     out: Path = typer.Option(..., help="Output file for trained program"),
 ):
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -159,7 +161,12 @@ def train_main(
         trained_program = optimizer.compile(program, trainset=examples, **compile_params)
     else:
         trained_program = program
-
+    
+    if ensemble:
+        ensemble_optimizer = Ensemble(reduce_fn=dspy.majority)
+        candidate_programs = [x[-1] for x in trained_program.candidate_programs]
+        trained_program = ensemble_optimizer.compile(candidate_programs)
+    
     # Save the trained program
     trained_program.save(out)
 
