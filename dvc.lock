@@ -3,7 +3,7 @@ stages:
   train:
     cmd: python main.py train --dataset-path bdsaglam/musique-mini --dataset-name
       answerable --dataset-split train --model llama-3-70b-tgi --temperature 0.1 --technique
-      cot --optimizer-path data/raw/optimizer-configs/bfsrs-medium.json --out data/generated/training/trained-program.json
+      ccot --optimizer-path data/raw/optimizer-configs/bfsrs-medium.json --out data/generated/training/trained-program.json
     deps:
     - path: data/raw/optimizer-configs/bfsrs-medium.json
       hash: md5
@@ -11,12 +11,12 @@ stages:
       size: 349
     - path: main.py
       hash: md5
-      md5: c3dffe3d948da37e08bc3dd06ad2da56
-      size: 7003
+      md5: 4aef26770d4032d670ab6707e0f1383b
+      size: 7137
     params:
       params.yaml:
         qa.model: llama-3-70b-tgi
-        qa.technique: cot
+        qa.technique: ccot
         qa.temperature: 0.1
         train.dataset.name: answerable
         train.dataset.path: bdsaglam/musique-mini
@@ -25,36 +25,36 @@ stages:
     outs:
     - path: data/generated/training/trained-program.json
       hash: md5
-      md5: d2ac3cdbc3aa6bc56155ae3754e84bcc
-      size: 14815
+      md5: 73b40a509439b9a55e992f56d615b532
+      size: 3973
   evaluate:
     cmd: python main.py evaluate --dataset-path bdsaglam/musique --dataset-name answerable
       --dataset-split validation --model llama-3-70b-tgi --temperature 0.1 --technique
-      cot --load-from data/generated/training/trained-program.json --out data/generated/evaluation/
+      ccot --load-from data/generated/training/trained-program.json --out data/generated/evaluation/
     deps:
     - path: data/generated/training/trained-program.json
       hash: md5
-      md5: d2ac3cdbc3aa6bc56155ae3754e84bcc
-      size: 14815
+      md5: 73b40a509439b9a55e992f56d615b532
+      size: 3973
     - path: main.py
       hash: md5
-      md5: c3dffe3d948da37e08bc3dd06ad2da56
-      size: 7003
+      md5: 4aef26770d4032d670ab6707e0f1383b
+      size: 7137
     params:
       params.yaml:
         evaluation.dataset.name: answerable
         evaluation.dataset.path: bdsaglam/musique
         evaluation.dataset.split: validation
         qa.model: llama-3-70b-tgi
-        qa.technique: cot
+        qa.technique: ccot
         qa.temperature: 0.1
-        run: 6
+        run: 3
     outs:
     - path: data/generated/evaluation/results.jsonl
       hash: md5
-      md5: 1280437dade5638e6daa8a8b440a2e77
-      size: 6070255
+      md5: b5c1bad3942c8c5a11349d9465151a19
+      size: 6097518
     - path: data/generated/evaluation/scores.json
       hash: md5
-      md5: ce0037b525251103d877c71d7af924dd
-      size: 478
+      md5: 1b321e18d923ee382cfb8d9922d19736
+      size: 479
