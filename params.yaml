@@ -14,6 +14,6 @@ evaluation:
 qa:
   model: llama-3-70b-tgi
   temperature: 0.1
-  technique: cot
+  technique: ccot
 
-run: 6
+run: 2
