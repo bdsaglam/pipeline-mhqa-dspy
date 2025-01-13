@@ -1,20 +1,20 @@
-from copy import deepcopy
 import json
 import os
-import pandas as pd
-import typer
+from copy import deepcopy
 from pathlib import Path
 
 import dspy
-from dspy.evaluate import Evaluate
-from datasets import load_dataset
-from bellem.utils import set_seed
+import pandas as pd
+import typer
 from bellem.musique.eval import (
     aggregate_scores,
     compute_scores,
     compute_scores_dataframe,
 )
+from bellem.utils import set_seed
+from datasets import load_dataset
 from dotenv import load_dotenv
+from dspy.evaluate import Evaluate
 from rich.console import Console
 
 print = Console(stderr=True).print
@@ -78,6 +78,9 @@ def get_predict_cls(technique):
         return dspy.Predict
     elif technique == "cot":
         return dspy.ChainOfThought
+    elif technique == "ccot":
+        from bellem.dspy.predict.ccot import ConciseChainOfThought
+        return ConciseChainOfThought
     elif technique == "cte":
         from bellem.dspy.predict.cte import ConnectTheEntities
 
