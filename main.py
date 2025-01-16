@@ -2,7 +2,6 @@ import json
 import os
 from copy import deepcopy
 from pathlib import Path
-from typing import Literal
 
 import dspy
 import pandas as pd
@@ -138,7 +137,7 @@ def train_main(
         default="UNSET", help="Path to a saved model to load"
     ),
     optimizer_path: Path = typer.Option(..., help="Path to the optimizer config"),
-    ensemble: Literal["yes", "no"] = typer.Option( "no", help="Whether to use an ensemble of models"),
+    ensemble: str = typer.Option( "no", help="Whether to use an ensemble of models"),
     out: Path = typer.Option(..., help="Output file for trained program"),
 ):
     out.parent.mkdir(parents=True, exist_ok=True)
