@@ -87,6 +87,10 @@ def get_predict_cls(technique):
         from bellem.dspy.predict.cte import ConnectTheEntities
 
         return ConnectTheEntities
+    elif technique == "cok":
+        from bellem.dspy.predict.cok import ChainOfKnowledge
+
+        return ChainOfKnowledge
     else:
         raise ValueError(f"Unknown technique: {technique}")
 
