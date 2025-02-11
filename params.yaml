@@ -13,7 +13,7 @@ evaluation:
     split: validation
 
 retrieve:
-  name: t5
+  model_type: t5
   top_k: 3
 
 qa:
