@@ -3,7 +3,7 @@ train:
     path: bdsaglam/musique-sweep
     name: answerable
     split: train
-  optimizer: bfsrs-light
+  optimizer: miprov2-light
   ensemble: no
 
 evaluation:
@@ -15,6 +15,6 @@ evaluation:
 qa:
   model: llama-3.3-70b-tgi
   temperature: 0.1
-  technique: multihop-decomposer
+  technique: multihop-decompose
 
 run: 1

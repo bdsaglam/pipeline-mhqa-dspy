@@ -33,5 +33,5 @@ dvc exp run --queue \
     -S evaluation.dataset.split='validation' \
     -S qa.model='llama-3.3-70b-tgi' \
     -S qa.temperature='0.1' \
-    -S qa.technique='multihop-decomposer'
+    -S qa.technique='multihop-decompose'
 

@@ -49,7 +49,7 @@ def make_program(technique: str):
         return make_simple_agent()
     elif technique == "agent-decompose":
         return make_decomposing_agent()
-    elif technique == "multihop-decomposer":
+    elif technique == "multihop-decompose":
         return make_multihop_program()
     else:
         return make_qa_program(technique)
