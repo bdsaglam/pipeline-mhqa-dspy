@@ -7,21 +7,20 @@ import dspy
 import pandas as pd
 import typer
 import weave
-from mhqa.evaluation import (
-    aggregate_scores,
-    compute_scores,
-    compute_scores_dataframe,
-)
-from mhqa.utils import set_seed
 from dotenv import load_dotenv
 from dspy.evaluate import Evaluate
 from dspy.teleprompt.ensemble import Ensemble
 from rich.console import Console
 
 from mhqa.agent import make_decomposing_agent, make_simple_agent
+from mhqa.evaluation import (
+    aggregate_scores,
+    compute_scores,
+    compute_scores_dataframe,
+)
 from mhqa.multihop import make_multihop_program
 from mhqa.qa import make_qa_program
-from mhqa.utils import configure_lm, dynamic_import
+from mhqa.utils import configure_lm, dynamic_import, set_seed
 
 print = Console(stderr=True).print
 
@@ -29,9 +28,8 @@ load_dotenv()
 
 set_seed(89)
 
-exp_name = os.getenv("DVC_EXP_NAME", "default")
 
-weave.init(project_name=f"mhqa-dspy-{exp_name}")
+weave.init(project_name="mhqa-dspy")
 
 
 app = typer.Typer()
@@ -189,4 +187,6 @@ def evaluate_main(
 
 
 if __name__ == "__main__":
-    app()
+    dvc_exp_name = os.getenv("DVC_EXP_NAME", "default")
+    with weave.attributes({"dvc.experiment": dvc_exp_name}):
+        app()
