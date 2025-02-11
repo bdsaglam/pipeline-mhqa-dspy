@@ -1,6 +1,14 @@
 import os
+import random
 
 import dspy
+import numpy as np
+
+
+# %% ../nbs/utils.ipynb 4
+def set_seed(seed):
+    np.random.seed(seed % (2**32 - 1))
+    random.seed(seed)
 
 
 def configure_lm(model, temperature):
@@ -19,3 +27,11 @@ def dynamic_import(module, name):
 
     return getattr(importlib.import_module(module), name)
 
+
+def dedup(items, key=lambda x: x):
+    seen = set()
+    for item in items:
+        k = key(item)
+        if k not in seen:
+            seen.add(k)
+            yield item

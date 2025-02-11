@@ -1,4 +1,5 @@
 import json
+import os
 from copy import deepcopy
 from pathlib import Path
 
@@ -6,18 +7,19 @@ import dspy
 import pandas as pd
 import typer
 import weave
-from bellem.musique.eval import (
+from mhqa.evaluation import (
     aggregate_scores,
     compute_scores,
     compute_scores_dataframe,
 )
-from bellem.utils import set_seed
+from mhqa.utils import set_seed
 from dotenv import load_dotenv
 from dspy.evaluate import Evaluate
 from dspy.teleprompt.ensemble import Ensemble
 from rich.console import Console
 
 from mhqa.agent import make_decomposing_agent, make_simple_agent
+from mhqa.multihop import make_multihop_program
 from mhqa.qa import make_qa_program
 from mhqa.utils import configure_lm, dynamic_import
 
@@ -27,7 +29,10 @@ load_dotenv()
 
 set_seed(89)
 
-weave.init(project_name="mhqa-dspy")
+exp_name = os.getenv("DVC_EXP_NAME", "default")
+
+weave.init(project_name=f"mhqa-dspy-{exp_name}")
+
 
 app = typer.Typer()
 
@@ -44,6 +49,8 @@ def make_program(technique: str):
         return make_simple_agent()
     elif technique == "agent-decompose":
         return make_decomposing_agent()
+    elif technique == "multihop-decomposer":
+        return make_multihop_program()
     else:
         return make_qa_program(technique)
 

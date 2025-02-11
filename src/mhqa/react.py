@@ -6,6 +6,7 @@ from dspy.primitives.program import Module
 from dspy.signatures.signature import ensure_signature
 from dspy.utils.callback import with_callbacks
 from pydantic import BaseModel, TypeAdapter
+import weave
 
 from mhqa.models import RunContext
 
@@ -114,6 +115,7 @@ class ReAct(Module):
         self.react = dspy.Predict(react_signature)
         self.extract = dspy.ChainOfThought(fallback_signature)
 
+    @weave.op()
     def forward(self, **input_args):
         def format(trajectory: dict[str, Any], last_iteration: bool):
             adapter = dspy.settings.adapter or dspy.ChatAdapter()
