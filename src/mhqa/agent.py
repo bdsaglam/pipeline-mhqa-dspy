@@ -8,7 +8,7 @@ def make_simple_agent():
     return ReAct("question -> answer", tools=[search_tool])
 
 
-def make_multi_step_agent(qa_technique: str):
+def make_decomposing_agent(qa_technique: str):
     qa_program = make_qa_program(qa_technique)
     qa_tool = make_qa_tool(qa_program)
     search_tool = make_search_tool()

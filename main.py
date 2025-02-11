@@ -17,7 +17,7 @@ from dspy.evaluate import Evaluate
 from dspy.teleprompt.ensemble import Ensemble
 from rich.console import Console
 
-from mhqa.agent import make_simple_agent
+from mhqa.agent import make_decomposing_agent, make_simple_agent
 from mhqa.qa import make_qa_program
 from mhqa.utils import configure_lm, dynamic_import
 
@@ -42,6 +42,8 @@ def preprocess_examples(examples: list[dspy.Example], technique: str):
 def make_program(technique: str):
     if technique == "agent-simple":
         return make_simple_agent()
+    elif technique == "agent-decompose":
+        return make_decomposing_agent()
     else:
         return make_qa_program(technique)
 
