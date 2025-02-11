@@ -10,7 +10,7 @@ class GenerateAnswer(dspy.Signature):
 
     context = dspy.InputField(desc="may contain relevant facts")
     question = dspy.InputField()
-    answer = dspy.OutputField(desc="often between 1 and 5 words")
+    answer = dspy.OutputField(desc="in a few words")
 
 
 class QAModule(dspy.Module):

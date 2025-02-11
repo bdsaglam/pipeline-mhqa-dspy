@@ -14,9 +14,9 @@ class Planner(dspy.Signature):
 class QuestionAnswerer(dspy.Signature):
     """Answer the question based on the context."""
 
-    context: str = dspy.InputField()
-    question: str = dspy.InputField("A multi-hop question")
-    answer: str = dspy.OutputField("The answer in a few words")
+    context: str = dspy.InputField(desc="may contain relevant facts")
+    question: str = dspy.InputField(desc="A multi-hop question")
+    answer: str = dspy.OutputField(desc="in a few words")
 
 
 def docs2context(docs):

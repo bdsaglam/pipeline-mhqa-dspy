@@ -4,8 +4,8 @@ from mhqa.react import ReAct
 from mhqa.search import make_search_tool
 
 class QuestionAnswer(dspy.Signature):
-    question: str = dspy.InputField("A multi-hop question")
-    answer: str = dspy.OutputField("The answer in a few words")
+    question: str = dspy.InputField(desc="A multi-hop question")
+    answer: str = dspy.OutputField(desc="in a few words")
 
 def make_simple_agent():
     search_tool = make_search_tool()
