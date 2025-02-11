@@ -49,7 +49,7 @@ class MultiHopQA(dspy.Module):
             if previous_answer and "{previous_answer}" in subquestion:
                 subquestion = subquestion.replace("{previous_answer}", previous_answer)
 
-            query = self.query_gen(subquestion=subquestion).query
+            query = self.query_gen(question=subquestion).query
             retrieved_docs = self.retrieve(docs, query=query, top_k=3)
 
             context = "\n\n".join([doc["text"] for doc in retrieved_docs])
