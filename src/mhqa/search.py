@@ -7,6 +7,13 @@ from mhqa.models import RunContext
 from mhqa.react import Tool
 
 
+def make_golden_retriever() -> Callable:
+    def retrieve(docs: list[dict], query: str, top_k: int = 3) -> list[dict]:
+        return [doc for doc in docs if doc["is_supporting"]]
+
+    return retrieve
+
+
 def make_retriever(reranker: Optional[BaseRanker] = None) -> Callable:
     if reranker is None:
         reranker = Reranker("t5")

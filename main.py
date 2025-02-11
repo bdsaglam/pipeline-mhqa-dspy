@@ -38,7 +38,7 @@ app = typer.Typer()
 
 
 def preprocess_examples(examples: list[dspy.Example], technique: str):
-    if "agent" in technique:
+    if "agent" in technique or "multihop" in technique:
         return [example.with_inputs("docs", "question") for example in examples]
     else:
         return [example.with_inputs("context", "question") for example in examples]
