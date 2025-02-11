@@ -16,6 +16,7 @@ class QuestionDecomposition(dspy.Signature):
     question: str = dspy.InputField()
     subquestions: list[str] = dspy.OutputField(desc=SUBQUESTION_INSTRUCTION)
 
+
 class QueryGeneration(dspy.Signature):
     question: str = dspy.InputField()
     query: str = dspy.OutputField(desc="query to retrieve relevant documents for the question")
@@ -42,11 +43,13 @@ class MultiHopQA(dspy.Module):
     def forward(self, docs, question):
         # TODO: remove this once, the program works well
         docs = [doc for doc in docs if doc["is_supporting"]]
+
         subquestions = self.qdecomp(question=question).subquestions
+
         hops = []
-        previous_answer = ""
         for subquestion in subquestions:
-            if previous_answer and "{previous_answer}" in subquestion:
+            if hops and "{previous_answer}" in subquestion:
+                previous_answer = hops[-1]["answer"]
                 subquestion = subquestion.replace("{previous_answer}", previous_answer)
 
             query = self.query_gen(question=subquestion).query
@@ -54,9 +57,8 @@ class MultiHopQA(dspy.Module):
 
             context = "\n\n".join([doc["text"] for doc in retrieved_docs])
             answer = self.qa(context=context, question=subquestion).answer
-            hops.append(dict(subquestion=subquestion, query=query, retrieved_docs=retrieved_docs, answer=answer))
 
-            previous_answer = answer
+            hops.append(dict(subquestion=subquestion, query=query, retrieved_docs=retrieved_docs, answer=answer))
 
         final_answer = hops[-1]["answer"]
         return dspy.Prediction(hops=hops, answer=final_answer)

@@ -3,7 +3,7 @@ train:
     path: bdsaglam/musique-sweep
     name: answerable
     split: train
-  optimizer: miprov2-light
+  optimizer: bfsrs-light
   ensemble: no
 
 evaluation:
