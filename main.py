@@ -5,6 +5,7 @@ from pathlib import Path
 import dspy
 import pandas as pd
 import typer
+import weave
 from bellem.musique.eval import (
     aggregate_scores,
     compute_scores,
@@ -25,6 +26,8 @@ print = Console(stderr=True).print
 load_dotenv()
 
 set_seed(89)
+
+weave.init(project_name="mhqa-dspy")
 
 app = typer.Typer()
 

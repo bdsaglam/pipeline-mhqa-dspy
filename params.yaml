@@ -3,7 +3,7 @@ train:
     path: bdsaglam/musique-sweep
     name: answerable
     split: train
-  optimizer: bfsrs-light
+  optimizer: bfsrs-medium
   ensemble: no
 
 evaluation:
@@ -14,7 +14,7 @@ evaluation:
 
 qa:
   model: llama-3.3-70b-tgi
-  temperature: 0.7
-  technique: ccot
+  temperature: 0.1
+  technique: agent-simple
 
 run: 1
