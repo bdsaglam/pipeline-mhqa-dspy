@@ -12,6 +12,10 @@ evaluation:
     name: answerable
     split: validation
 
+retrieve:
+  name: t5
+  top_k: 3
+
 qa:
   model: llama-3.3-70b-tgi
   temperature: 0.1

@@ -1,26 +1,24 @@
-from typing import Callable, Optional
+from typing import Callable
 
 from rerankers import Reranker
-from rerankers.models.ranker import BaseRanker
 
 from mhqa.models import RunContext
 from mhqa.react import Tool
 
 
 def make_golden_retriever() -> Callable:
-    def retrieve(docs: list[dict], query: str, top_k: int = 3) -> list[dict]:
+    def retrieve(docs: list[dict], query: str) -> list[dict]:
         return [doc for doc in docs if doc["is_supporting"]]
 
     return retrieve
 
 
-def make_retriever(reranker: Optional[BaseRanker] = None) -> Callable:
-    if reranker is None:
-        reranker = Reranker("t5")
+def make_retriever(name: str = "t5", top_k: int = 3) -> Callable:
+    reranker = Reranker(name)
     if reranker is None:
         raise ValueError("Ranker is not initialized")
 
-    def retrieve(docs: list[dict], query: str, top_k: int = 3) -> list[dict]:
+    def retrieve(docs: list[dict], query: str) -> list[dict]:
         texts = [doc["text"] for doc in docs]
         ranking = reranker.rank(query=query, docs=texts, doc_ids=list(range(len(texts))))
         return [docs[result.doc_id] for result in ranking.results[:top_k]]
@@ -28,18 +26,11 @@ def make_retriever(reranker: Optional[BaseRanker] = None) -> Callable:
     return retrieve
 
 
-def make_search_tool(reranker: Optional[BaseRanker] = None, top_k: int = 3) -> Callable:
-    if reranker is None:
-        reranker = Reranker("t5")
-    if reranker is None:
-        raise ValueError("Ranker is not initialized")
-
+def make_search_tool(retriever: Callable) -> Callable:
     def search(query: str, run_context: RunContext) -> list[str]:
         """Find relevant documents for the query."""
         docs = run_context.input["docs"]
-        texts = [doc["text"] for doc in docs]
-        ranking = reranker.rank(query=query, docs=texts, doc_ids=list(range(len(texts))))
-        retrieved_docs = [docs[result.doc_id] for result in ranking.results[:top_k]]
+        retrieved_docs = retriever(docs, query)
         return [x["text"] for x in retrieved_docs]
 
     return Tool(func=search, name="search", desc="Search the relevant information")

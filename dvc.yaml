@@ -5,6 +5,8 @@ stages:
       --dataset-path ${train.dataset.path}
       --dataset-name ${train.dataset.name}
       --dataset-split ${train.dataset.split}
+      --retriever ${retriever.name}
+      --top-k ${retriever.top_k}
       --model ${qa.model}
       --temperature ${qa.temperature}
       --technique ${qa.technique}
@@ -22,6 +24,8 @@ stages:
       - train.dataset.split
       - train.optimizer
       - train.ensemble
+      - retrieve.name
+      - retrieve.top_k
       - qa.model
       - qa.temperature
       - qa.technique
@@ -32,6 +36,8 @@ stages:
       --dataset-path ${evaluation.dataset.path}
       --dataset-name ${evaluation.dataset.name}
       --dataset-split ${evaluation.dataset.split}
+      --retriever ${retriever.name}
+      --top-k ${retriever.top_k}
       --model ${qa.model}
       --temperature ${qa.temperature}
       --technique ${qa.technique}
@@ -48,6 +54,8 @@ stages:
       - evaluation.dataset.path
       - evaluation.dataset.name
       - evaluation.dataset.split
+      - retrieve.name
+      - retrieve.top_k
       - qa.model
       - qa.temperature
       - qa.technique

@@ -1,7 +1,6 @@
 import dspy
 import weave
-
-from mhqa.search import make_retriever
+from typing import Callable
 
 SUBQUESTION_INSTRUCTION = """
 Subquestions must be formatted to refer the answer of previous subquestion if applicable. For instance, 
@@ -39,10 +38,10 @@ class MultiHopQA(dspy.Module):
         self.query_gen = dspy.Predict(QueryGeneration)
         self.qa = dspy.ChainOfThought(QuestionAnswerer)
 
-    @weave.op()
+    @weave.op(name="multihop-qa")
     def forward(self, docs, question):
         # TODO: remove this once, the program works well
-        docs = [doc for doc in docs if doc["is_supporting"]]
+        # docs = [doc for doc in docs if doc["is_supporting"]]
 
         subquestions = self.qdecomp(question=question).subquestions
 
@@ -53,7 +52,7 @@ class MultiHopQA(dspy.Module):
                 subquestion = subquestion.replace("{previous_answer}", previous_answer)
 
             query = self.query_gen(question=subquestion).query
-            retrieved_docs = self.retrieve(docs, query=query, top_k=3)
+            retrieved_docs = self.retrieve(docs, query=query)
 
             context = "\n\n".join([doc["text"] for doc in retrieved_docs])
             answer = self.qa(context=context, question=subquestion).answer
@@ -64,6 +63,5 @@ class MultiHopQA(dspy.Module):
         return dspy.Prediction(hops=hops, answer=final_answer)
 
 
-def make_multihop_program(reranker=None):
-    retrieve = make_retriever(reranker)
-    return MultiHopQA(retrieve)
+def make_multihop_program(retriever: Callable):
+    return MultiHopQA(retriever)

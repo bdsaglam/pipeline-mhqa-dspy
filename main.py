@@ -20,6 +20,7 @@ from mhqa.evaluation import (
 )
 from mhqa.multihop import make_multihop_program
 from mhqa.qa import make_qa_program
+from mhqa.search import make_retriever
 from mhqa.utils import configure_lm, dynamic_import, set_seed
 
 print = Console(stderr=True).print
@@ -42,17 +43,19 @@ def preprocess_examples(examples: list[dspy.Example], technique: str):
         return [example.with_inputs("context", "question") for example in examples]
 
 
-def make_program(technique: str):
+def make_program(technique: str, retriever_name: str, top_k: int):
+    retriever = make_retriever(retriever_name, top_k=top_k)
     if technique == "agent-simple":
-        return make_simple_agent()
+        return make_simple_agent(retriever)
     elif technique == "agent-decompose":
-        return make_decomposing_agent()
+        return make_decomposing_agent(retriever)
     elif technique == "multihop-decompose":
-        return make_multihop_program()
+        return make_multihop_program(retriever)
     else:
         return make_qa_program(technique)
 
 
+@weave.op()
 def evaluate_answer(example, pred, trace=None):
     scores = compute_scores(pred.answer, example.answers)
     return scores["f1"]
@@ -84,6 +87,8 @@ def train_main(
     dataset_path: str = typer.Option(..., help="Path to the dataset"),
     dataset_name: str = typer.Option(..., help="Name of the dataset"),
     dataset_split: str = typer.Option(..., help="Dataset split to use (e.g., 'train', 'validation')"),
+    retriever: str = typer.Option(..., help="Name of the retriever to use"),
+    top_k: int = typer.Option(..., help="Number of documents to retrieve"),
     model: str = typer.Option(..., help="Name of the model to use"),
     temperature: float = typer.Option(..., help="Temperature parameter for the model"),
     technique: str = typer.Option(..., help="Prompting technique to use"),
@@ -107,7 +112,7 @@ def train_main(
         raise ValueError(f"Unknown dataset: {dataset_path}")
 
     # Create the program
-    program = make_program(technique)
+    program = make_program(technique=technique, retriever_name=retriever, top_k=top_k)
     if load_from and load_from != "UNSET":
         print(f"Loading model from {load_from}")
         program.load(load_from)
@@ -137,6 +142,8 @@ def evaluate_main(
     dataset_path: str = typer.Option(..., help="Path to the dataset"),
     dataset_name: str = typer.Option(..., help="Name of the dataset"),
     dataset_split: str = typer.Option(..., help="Dataset split to use (e.g., 'train', 'validation')"),
+    retriever: str = typer.Option(..., help="Name of the retriever to use"),
+    top_k: int = typer.Option(..., help="Number of documents to retrieve"),
     model: str = typer.Option(..., help="Name of the model to use"),
     temperature: float = typer.Option(..., help="Temperature parameter for the model"),
     technique: str = typer.Option(..., help="Prompting technique to use"),
@@ -158,7 +165,7 @@ def evaluate_main(
         raise ValueError(f"Unknown dataset: {dataset_path}")
 
     # Create the program
-    program = make_program(technique)
+    program = make_program(technique=technique, retriever_name=retriever, top_k=top_k)
     if load_from and load_from != "UNSET":
         print(f"Loading model from {load_from}")
         program.load(load_from)
