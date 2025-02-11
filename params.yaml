@@ -1,19 +1,19 @@
 train:
   dataset:
-    path: bdsaglam/musique-mini
+    path: bdsaglam/musique-sweep
     name: answerable
     split: train
-  optimizer: bfsrs-medium
+  optimizer: bfsrs-light
   ensemble: no
 
 evaluation:
   dataset:
-    path: bdsaglam/musique
+    path: bdsaglam/musique-sweep
     name: answerable
     split: validation
 
 qa:
-  model: llama-3-70b-tgi
+  model: llama-3.3-70b-tgi
   temperature: 0.7
   technique: ccot
 

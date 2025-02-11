@@ -1,5 +1,4 @@
 import inspect
-from dataclasses import dataclass
 from typing import Any, Callable, Literal, get_origin, get_type_hints
 
 import dspy
@@ -8,10 +7,7 @@ from dspy.signatures.signature import ensure_signature
 from dspy.utils.callback import with_callbacks
 from pydantic import BaseModel, TypeAdapter
 
-
-@dataclass
-class RunContext:
-    input: dict[str, Any]
+from mhqa.models import RunContext
 
 
 class Tool:
