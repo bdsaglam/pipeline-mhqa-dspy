@@ -6,14 +6,14 @@ from mhqa.models import RunContext
 from mhqa.react import Tool
 
 
-def make_golden_retriever() -> Callable:
-    def retrieve(docs: list[dict], query: str) -> list[dict]:
-        return [doc for doc in docs if doc["is_supporting"]]
-
-    return retrieve
+def golden_retrieve(docs: list[dict], query: str) -> list[dict]:
+    return [doc for doc in docs if doc["is_supporting"]]
 
 
 def make_retriever(name: str = "t5", top_k: int = 3) -> Callable:
+    if name == "golden":
+        return golden_retrieve
+
     reranker = Reranker(name)
     if reranker is None:
         raise ValueError("Ranker is not initialized")

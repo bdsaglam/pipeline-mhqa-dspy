@@ -40,9 +40,6 @@ class MultiHopQA(dspy.Module):
 
     @weave.op(name="multihop-qa")
     def forward(self, docs, question):
-        # TODO: remove this once, the program works well
-        # docs = [doc for doc in docs if doc["is_supporting"]]
-
         subquestions = self.qdecomp(question=question).subquestions
 
         hops = []
