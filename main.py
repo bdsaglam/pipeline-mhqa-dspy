@@ -174,7 +174,7 @@ def evaluate_main(
     evaluate_program = Evaluate(
         metric=evaluate_answer,
         devset=examples,
-        num_threads=8,
+        num_threads=1,
         display_progress=True,
         return_outputs=True,
     )
