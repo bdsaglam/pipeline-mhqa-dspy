@@ -7,6 +7,16 @@ from mhqa.predict import get_predict_cls
 from mhqa.react import Tool
 
 
+class QuestionAnswering(dspy.Signature):
+    question: str = dspy.InputField()
+    answer: str = dspy.OutputField(desc="in a few words")
+
+
+class MultihopQuestionAnswering(dspy.Signature):
+    question: str = dspy.InputField(desc="A multi-hop question")
+    answer: str = dspy.OutputField(desc="in a few words")
+
+
 class QuestionAnsweringRC(dspy.Signature):
     """Answer the question based on the given context."""
 
@@ -16,12 +26,12 @@ class QuestionAnsweringRC(dspy.Signature):
 
 
 def make_qa_program(technique: str = "cot"):
-    return get_predict_cls(technique)(QuestionAnsweringRC())
+    return get_predict_cls(technique)(QuestionAnsweringRC)
 
 
 def make_qa_tool(program: Optional[dspy.Module] = None, load_from: str | None = None):
     if program is None:
-        program = dspy.ChainOfThought(QuestionAnsweringRC())
+        program = dspy.ChainOfThought(QuestionAnsweringRC)
     if load_from:
         program.load(load_from)
 
