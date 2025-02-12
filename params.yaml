@@ -17,7 +17,7 @@ retrieve:
   top_k: 3
 
 qa:
-  model: llama-3.3-70b-tgi
+  model: llama-3.3-70b
   temperature: 0.1
   technique: multihop-decompose
 
