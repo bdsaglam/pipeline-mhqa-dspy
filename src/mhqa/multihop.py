@@ -1,6 +1,9 @@
+from typing import Callable
+
 import dspy
 import weave
-from typing import Callable
+
+from mhqa.qa import QuestionAnsweringRC
 
 SUBQUESTION_INSTRUCTION = """
 Subquestions must be formatted to refer the answer of previous subquestion if applicable. For instance, 
@@ -21,14 +24,6 @@ class QueryGeneration(dspy.Signature):
     query: str = dspy.OutputField(desc="query to retrieve relevant documents for the question")
 
 
-class QuestionAnswerer(dspy.Signature):
-    """Answer the subquestion based on the context."""
-
-    context: str = dspy.InputField(desc="may contain relevant facts")
-    question: str = dspy.InputField()
-    answer: str = dspy.OutputField(desc="in a few words")
-
-
 class MultiHopQA(dspy.Module):
     def __init__(self, retrieve):
         super().__init__()
@@ -36,7 +31,7 @@ class MultiHopQA(dspy.Module):
         self.retrieve = retrieve
         self.qdecomp = dspy.Predict(QuestionDecomposition)
         self.query_gen = dspy.Predict(QueryGeneration)
-        self.qa = dspy.ChainOfThought(QuestionAnswerer)
+        self.qa = dspy.ChainOfThought(QuestionAnsweringRC)
 
     @weave.op(name="multihop-qa")
     def forward(self, docs, question):
