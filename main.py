@@ -43,6 +43,19 @@ def preprocess_examples(examples: list[dspy.Example], technique: str):
         return [example.with_inputs("context", "question") for example in examples]
 
 
+def prepare_examples(dataset_path: str, dataset_name: str, dataset_split: str, technique: str):
+    if "musique" in dataset_path:
+        from mhqa.dataset.musique import load_examples
+
+        return preprocess_examples(load_examples(dataset_path, dataset_name, dataset_split), technique)
+    elif "drop" in dataset_path:
+        from mhqa.dataset.drop import load_examples
+
+        return preprocess_examples(load_examples(dataset_path, dataset_name, dataset_split), technique)
+    else:
+        raise ValueError(f"Unknown dataset: {dataset_path}")
+
+
 def make_program(technique: str, retriever_name: str, top_k: int):
     retriever = make_retriever(retriever_name, top_k=top_k)
     if technique == "agent-simple":
@@ -58,7 +71,7 @@ def make_program(technique: str, retriever_name: str, top_k: int):
 @weave.op()
 def evaluate_answer(example, pred, trace=None):
     scores = compute_scores(pred.answer, example.answers)
-    return scores["f1"]
+    return scores["exact_match"]
 
 
 def make_optimizer(optimizer_config: dict):
@@ -103,13 +116,8 @@ def train_main(
     configure_lm(model, temperature)
 
     # Load and preprocess datasets
-    if "musique" in dataset_path:
-        from mhqa.musique import load_examples
-
-        examples = preprocess_examples(load_examples(dataset_path, dataset_name, dataset_split), technique)
-        print(f"Loaded {len(examples)} examples")
-    else:
-        raise ValueError(f"Unknown dataset: {dataset_path}")
+    examples = prepare_examples(dataset_path, dataset_name, dataset_split, technique)
+    print(f"Loaded {len(examples)} examples")
 
     # Create the program
     program = make_program(technique=technique, retriever_name=retriever, top_k=top_k)
@@ -156,13 +164,8 @@ def evaluate_main(
     configure_lm(model, temperature)
 
     # Load and preprocess datasets
-    if "musique" in dataset_path:
-        from mhqa.musique import load_examples
-
-        examples = preprocess_examples(load_examples(dataset_path, dataset_name, dataset_split), technique)
-        print(f"Loaded {len(examples)} examples")
-    else:
-        raise ValueError(f"Unknown dataset: {dataset_path}")
+    examples = prepare_examples(dataset_path, dataset_name, dataset_split, technique)
+    print(f"Loaded {len(examples)} examples")
 
     # Create the program
     program = make_program(technique=technique, retriever_name=retriever, top_k=top_k)
