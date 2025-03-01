@@ -18,7 +18,7 @@ retrieve:
 
 qa:
   model: llama-3.3-70b
-  temperature: 0.1
-  technique: multihop-decompose
+  temperature: 0.3
+  technique: agent-simple
 
 run: 1

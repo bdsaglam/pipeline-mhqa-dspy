@@ -21,6 +21,7 @@ from mhqa.evaluation import (
 from mhqa.multihop import make_multihop_program
 from mhqa.qa import make_qa_program
 from mhqa.search import make_retriever
+from mhqa.tgi_json_adapter import TGIJSONAdapter
 from mhqa.utils import configure_lm, dynamic_import, set_seed
 
 print = Console(stderr=True).print
@@ -29,9 +30,9 @@ load_dotenv()
 
 set_seed(89)
 
+dspy.settings.adapter = TGIJSONAdapter()
 
 weave.init(project_name="mhqa-dspy")
-
 
 app = typer.Typer()
 
