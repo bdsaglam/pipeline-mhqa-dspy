@@ -1,60 +1,67 @@
 schema: '2.0'
 stages:
   train:
-    cmd: python main.py train --dataset-path bdsaglam/musique-mini --dataset-name
-      answerable --dataset-split train --model llama-3-70b-tgi --temperature 0.1 --technique
-      cot --optimizer-path data/raw/optimizer-configs/bfsrs-medium.json --out data/generated/training/trained-program.json
+    cmd: python main.py train --dataset-path bdsaglam/musique-sweep --dataset-name
+      answerable --dataset-split train --retriever t5 --top-k 3 --model llama-3.3-70b
+      --temperature 0.3 --technique agent-simple --optimizer-path data/raw/optimizer-configs/noop.json
+      --ensemble no --out data/generated/training/trained-program.json
     deps:
-    - path: data/raw/optimizer-configs/bfsrs-medium.json
+    - path: data/raw/optimizer-configs/noop.json
       hash: md5
-      md5: 21335759c8c5393412fe84db76afca93
-      size: 349
+      md5: 37a6259cc0c1dae299a7866489dff0bd
+      size: 4
     - path: main.py
       hash: md5
-      md5: c3dffe3d948da37e08bc3dd06ad2da56
-      size: 7003
+      md5: 15c14ccb790c339a672f67641ef334f8
+      size: 7494
     params:
       params.yaml:
-        qa.model: llama-3-70b-tgi
-        qa.technique: cot
-        qa.temperature: 0.1
+        qa.model: llama-3.3-70b
+        qa.technique: agent-simple
+        qa.temperature: 0.3
+        retrieve.model_type: t5
+        retrieve.top_k: 3
         train.dataset.name: answerable
-        train.dataset.path: bdsaglam/musique-mini
+        train.dataset.path: bdsaglam/musique-sweep
         train.dataset.split: train
-        train.optimizer: bfsrs-medium
+        train.ensemble: no
+        train.optimizer: noop
     outs:
     - path: data/generated/training/trained-program.json
       hash: md5
-      md5: d2ac3cdbc3aa6bc56155ae3754e84bcc
-      size: 14815
+      md5: e31b739e81e127d2a9df7c6df853304d
+      size: 2121
   evaluate:
-    cmd: python main.py evaluate --dataset-path bdsaglam/musique --dataset-name answerable
-      --dataset-split validation --model llama-3-70b-tgi --temperature 0.1 --technique
-      cot --load-from data/generated/training/trained-program.json --out data/generated/evaluation/
+    cmd: python main.py evaluate --dataset-path bdsaglam/musique-sweep --dataset-name
+      answerable --dataset-split validation --retriever t5 --top-k 3 --model llama-3.3-70b
+      --temperature 0.3 --technique agent-simple --load-from data/generated/training/trained-program.json
+      --out data/generated/evaluation/
     deps:
     - path: data/generated/training/trained-program.json
       hash: md5
-      md5: d2ac3cdbc3aa6bc56155ae3754e84bcc
-      size: 14815
+      md5: e31b739e81e127d2a9df7c6df853304d
+      size: 2121
     - path: main.py
       hash: md5
-      md5: c3dffe3d948da37e08bc3dd06ad2da56
-      size: 7003
+      md5: 15c14ccb790c339a672f67641ef334f8
+      size: 7494
     params:
       params.yaml:
         evaluation.dataset.name: answerable
-        evaluation.dataset.path: bdsaglam/musique
+        evaluation.dataset.path: bdsaglam/musique-sweep
         evaluation.dataset.split: validation
-        qa.model: llama-3-70b-tgi
-        qa.technique: cot
-        qa.temperature: 0.1
-        run: 6
+        qa.model: llama-3.3-70b
+        qa.technique: agent-simple
+        qa.temperature: 0.3
+        retrieve.model_type: t5
+        retrieve.top_k: 3
+        run: 1
     outs:
     - path: data/generated/evaluation/results.jsonl
       hash: md5
-      md5: 1280437dade5638e6daa8a8b440a2e77
-      size: 6070255
+      md5: 8d31964cc3263d6d5d10a098b8a675b7
+      size: 6674611
     - path: data/generated/evaluation/scores.json
       hash: md5
-      md5: ce0037b525251103d877c71d7af924dd
-      size: 478
+      md5: 8c207c814b1aacaefa2248a4081693ea
+      size: 269

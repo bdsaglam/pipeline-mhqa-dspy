@@ -30,7 +30,7 @@ load_dotenv()
 
 set_seed(89)
 
-dspy.settings.adapter = TGIJSONAdapter()
+# dspy.settings.adapter = TGIJSONAdapter()
 
 weave.init(project_name="mhqa-dspy")
 
