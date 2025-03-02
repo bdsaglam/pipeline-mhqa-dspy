@@ -17,7 +17,7 @@ retrieve:
   top_k: 3
 
 qa:
-  model: llama-3.3-70b
+  model: Llama-3.3-70B-Instruct
   temperature: 0.3
   technique: agent-simple
 
